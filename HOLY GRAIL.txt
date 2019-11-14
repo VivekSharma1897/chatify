@@ -1,0 +1,128 @@
+import React, { Component } from 'react';
+import { withFirebase } from '../firebase/';
+import {Link, withRouter} from 'react-router-dom';
+import './profile_page.css';
+import * as ROUTES from '../constants/routes';
+import {uid as loggedInUID} from '../log_in_page/';
+import {signedUpUID} from '../sign_up_page/'
+import F from 'firebase';
+import SignOut from '../sign_out/'
+import {Header} from '../log_in_page/'
+const classes = {
+    navBar : 'nav-bar',
+    navTitle : 'nav-title',
+    navList : 'nav-list',
+    navListItem : 'nav-list-item',
+    testContent : 'ProfilePage',
+}
+
+let uid='';
+
+const ProfilePage = ({UID}) => (
+    <div>
+    {UID ? <HeaderBar/> : <Header/>}
+    { UID ? <ProfilePageBase/> : <NotLoggedIn/> }
+    </div>
+);
+
+const NotLoggedIn = () => (
+    <h1>
+        NOT LOGGED IN!
+    </h1>
+);
+
+class ProfilePageBaseClass extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            email: "",
+            username : "",
+            loading : false,
+        }
+        if(loggedInUID){
+            uid=loggedInUID;
+        }
+        else{
+            uid=signedUpUID;
+        }
+    }
+
+    componentDidMount(){
+        this.setState({loading : true});
+        {console.log("USER UID : ", uid)}
+        this.props.firebase.user(uid.user.uid).on('value', snapshot=>{
+            const userInfo = snapshot.val();
+            this.setState({email: userInfo.email, username : userInfo.username, loading: false});
+        });
+    }
+
+    componentWillUnmount(){
+        this.props.firebase.user(uid.user.uid).off();
+    }
+
+    onPostChange = (event) => {
+        this.setState({[event.target.name]: event.target.value});
+    }
+
+    onPostSubmit = (event) => {
+        event.preventDefault();
+        const userInfo = {name: "Vivek", id :uid.user.uid, time:F.database.ServerValue.TIMESTAMP}
+        let namey= "Vivek";
+        let idy="ABC";
+        let arrayo = [1,2,3,4]
+        let key = this.props.firebase.posts().push().key
+        console.log("KEY??//?", key);
+        this.props.firebase.post(key).set(userInfo);
+        let mahPost = []
+        this.props.firebase.user(uid.user.uid).on('value', snapshot=>{
+            const userInfo = snapshot.val();
+            mahPost = [...userInfo.POST]
+            console.log("MAHPOST :", mahPost);
+        });
+        mahPost.push(key)
+        this.props.firebase.user(uid.user.uid).update({POST: mahPost});
+    }
+
+    render(){
+        return (
+            <React.Fragment>
+            <h1>
+                {classes.testContent}
+                {this.state.loading && <p>Loading...</p>}
+                <div>
+                    <form onSubmit={this.onPostSubmit}>
+                        <label>POST:</label>
+                        <textarea type="text" name="postcontent" onChange={this.onPostChange} value={this.state.postcontent} placeholder="post here..." rows="4"></textarea>
+                        <button onSubmit={this.onPostSubmit} type="submit">POST</button>
+                    </form>
+                </div>
+                <UserData email={this.state.email} username={this.state.username}/>
+            </h1>
+            </React.Fragment>
+        );
+    }
+
+}
+
+const HeaderBar = () => (
+    <div className={classes.navBar}>
+        <h1 className={classes.navTitle}><Link to={ROUTES.PROFILE_PAGE}>Chatify</Link></h1>
+        <ul className={classes.navList}>
+            <li className={classes.navListItem}>Chat</li>
+            <li className={classes.navListItem}>ProfilePic</li>
+            <li className={classes.navListItem}>Notification</li>
+        </ul>
+        <SignOut/>
+    </div>
+);
+
+const UserData = ({email, username}) =>(
+    <ul>
+        <li>{email}</li>
+        <li>{username}</li>
+    </ul>
+);
+
+const ProfilePageBase = withRouter(withFirebase(ProfilePageBaseClass));
+
+export default ProfilePage;

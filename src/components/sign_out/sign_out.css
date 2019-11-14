@@ -1,0 +1,21 @@
+.sign-out-btn{
+    width: 100px;
+    height: 70%;
+    margin: auto 10px;
+    border: 1px solid #6A926C;
+    border-radius: 60px;
+    background: #6A926C;
+    color: #E6EDE6;
+    font-family: 'Lato', sans-serif;
+    font-weight: lighter;
+    font-size: 16px;
+    padding: 3px;
+    outline: none;
+}
+.sign-out-btn:active{
+    background: #CDDBCE;
+    outline: none;
+}
+.sign-out-btn:hover{
+    background: #9BB69D;
+}
