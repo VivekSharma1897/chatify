@@ -83,8 +83,8 @@ class ProfilePageBaseClass extends Component {
                     }
                 }
                 );
-            }, 5000);
-            this.setState({userPosts:userInfo});
+                this.setState({userPosts:userInfo});
+            }, 2000);
         });
     }
 
