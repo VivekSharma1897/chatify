@@ -45,6 +45,7 @@ const INITIAL_STATE ={
     titleinput : "",
     postcontent : "",
     userPosts : null,
+    loading: false,
 }
 
 class ProfilePageBaseClass extends Component {
@@ -56,32 +57,35 @@ class ProfilePageBaseClass extends Component {
     componentWillMount(){
         this.props.firebase.user(this.props.UID.uid).on('value', snapshot=>{
             const userInfo = snapshot.val();
+            console.log("STATE: ", this.state);
             console.log("FRIEND ON FETCH: ", userInfo.friends);
-            this.setState({email: userInfo.email, username : userInfo.username, friendList : userInfo.friends, loading: false});
+            this.setState({email: userInfo.email, username : userInfo.username, friendList : userInfo.friends, loading: true});
         });
     }
-    componentDidMount(){        
+    componentDidMount(){   
         this.props.firebase.posts().orderByChild("time").on('value', snapshot=>{
             const userInfo = snapshot.val();
+            console.log("STATE DID: ", this.state);
             console.log("FETCHED USER POSTS : ", userInfo);
             console.log("FRIENDLIST: ", this.state.friendList)
-            Object.keys(userInfo).forEach(key=>{
-                if(this.state.friendList){
-                    if(this.state.friendList.includes(userInfo[key].author) || this.props.UID.uid===userInfo[key].author){
-                        
+            setTimeout(()=>{
+                Object.keys(userInfo).forEach(key=>{
+                    if(this.state.friendList){
+                        if(this.state.friendList.includes(userInfo[key].author) || this.props.UID.uid===userInfo[key].author){
+                            
+                        }
+                        else{
+                            delete userInfo[key];
+                        }
                     }
                     else{
                         delete userInfo[key];
                     }
                 }
-                else{
-                    delete userInfo[key];
-                }
-            }
-            );
+                );
+            }, 5000);
             this.setState({userPosts:userInfo});
         });
-
     }
 
     componentWillUnmount(){
