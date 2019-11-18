@@ -434,9 +434,7 @@ class ProfilePageBaseClass extends Component {
               />
             )}
             {this.state.postType && (
-              <div className="image-added" style={{ marginTop: "5px" }}>
-                Image Added!
-              </div>
+              <div className="image-added">Image Added!</div>
             )}
             <div className={classes.postSubmitBtnBox}>
               <div className="add-image-container">

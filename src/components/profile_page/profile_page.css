@@ -237,7 +237,8 @@ h1 {
   margin-top: 5px;
 }
 .image-added {
-  align-items: center;
+  display: flex;
+  justify-content: center;
   padding: 5px 0;
   border: 1px solid #386e3b;
   border-radius: 3px;
