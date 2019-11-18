@@ -24,18 +24,11 @@ const PersonalPage = props => (
 );
 
 const PersonalPageBase = props => {
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState("profilepic.jpg");
   const [profInfo, setProfInfo] = useState(null);
   const [friendList, setFriendList] = useState([]);
 
   useEffect(() => {
-    props.firebase
-      .getProfileImage("profilepic.jpg")
-      .getDownloadURL()
-      .then(url => {
-        setProfilePic(url);
-      });
-
     props.firebase.user(props.UID.uid).on("value", snapshot => {
       setProfInfo(snapshot.val());
       console.log("GOT THE INFO: ", snapshot.val());
@@ -44,6 +37,23 @@ const PersonalPageBase = props => {
 
   useEffect(() => {
     if (profInfo) {
+      if (profInfo.profilePic) {
+        props.firebase
+          .getProfileImage(profInfo.profilePic)
+          .getDownloadURL()
+          .then(url => {
+            console.log(url);
+            setProfilePic(url);
+          });
+      } else {
+        props.firebase
+          .getProfileImage(profilePic)
+          .getDownloadURL()
+          .then(url => {
+            console.log(url);
+            setProfilePic(url);
+          });
+      }
       let myfriendList = [];
       profInfo.friends.map(key => {
         props.firebase.user(key).on("value", snapshot => {
@@ -54,10 +64,42 @@ const PersonalPageBase = props => {
     }
   }, [profInfo]);
 
+  const onImageInput = event => {
+    let image = event.target.files[0];
+    console.log(image);
+    const uploadTask = props.firebase.getProfileImage(props.UID.uid).put(image);
+    uploadTask.on(
+      "state_changed",
+      snapshot => {},
+      error => {
+        console.log(error);
+      },
+      () => {
+        props.firebase
+          .getProfileImage(props.UID.uid)
+          .getDownloadURL()
+          .then(url => {
+            setProfilePic(url);
+            console.log("this ran first");
+          })
+          .then(() => {
+            props.firebase
+              .user(props.UID.uid)
+              .update({ profilePic: props.UID.uid });
+            console.log("this ran second");
+          });
+      }
+    );
+  };
+
   let content = (
     <div className={classes.profPage}>
       {profInfo && (
-        <ProfContainer profInfo={profInfo} profilePic={profilePic} />
+        <ProfContainer
+          profInfo={profInfo}
+          profilePic={profilePic}
+          onImageInput={onImageInput}
+        />
       )}
       {profInfo && (
         <div className={classes.profBelowHead}>
@@ -69,13 +111,18 @@ const PersonalPageBase = props => {
   return content;
 };
 
-const ProfContainer = ({ profInfo, profilePic }) => (
+const ProfContainer = ({ profInfo, profilePic, onImageInput }) => (
   <div className={classes.profContainer}>
     <img src={profilePic} className={classes.profPic} />
-    <label for="profilePicUpload" className="profilePicUploadLabel">
+    <label htmlFor="profilePicUpload" className="profilePicUploadLabel">
       Upload Image
     </label>
-    <input id="profilePicUpload" className="imageInput" type="file" />
+    <input
+      id="profilePicUpload"
+      className="imageInput"
+      type="file"
+      onChange={onImageInput}
+    />
     <span className={classes.profName}>{profInfo.username}</span>
   </div>
 );
