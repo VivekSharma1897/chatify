@@ -51,6 +51,12 @@
 .imageInput {
   display: none;
 }
+.prof-pic:hover + .profilePicUploadLabel {
+  display: block;
+}
+.profilePicUploadLabel:hover {
+  display: block;
+}
 .profilePicUploadLabel {
   display: none;
   padding: 10px;
@@ -58,8 +64,9 @@
   font-size: 12px;
   border: 1px solid #386e38;
   background: white;
-  margin-top: -140px;
-  padding: 50px 20px;
+  margin-top: -158px;
+  padding: 70px 40px;
   border-radius: 100px;
   opacity: 40%;
+  margin-bottom: 1px;
 }

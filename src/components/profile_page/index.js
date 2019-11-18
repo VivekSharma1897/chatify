@@ -41,7 +41,7 @@ const ProfilePage = ({ UID }) => (
 );
 
 const NotLoggedIn = () => (
-  <div className={classes.feeds}>
+  <div className={classes.feeds} style={{ marginRight: "0px" }}>
     <span className={classes.relogInBtn}>
       Login to Chatify{" "}
       <Link to={ROUTES.LOGIN_PAGE} className={classes.relogInDialog}>
