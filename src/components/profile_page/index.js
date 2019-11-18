@@ -26,7 +26,9 @@ const classes = {
   allPosts: "all-posts",
   searchBtn: "search-btn",
   pageContent: "page-content",
-  friendListContent: "friend-list-content"
+  friendListContent: "friend-list-content",
+  addImageLabel: "add-image-label",
+  addImageInput: "add-image-input"
 };
 
 const ProfilePage = ({ UID }) => (
@@ -56,6 +58,8 @@ const INITIAL_STATE = {
   username: "",
   titleinput: "",
   postcontent: "",
+  postType: null,
+  image: null,
   userPosts: null,
   loading: false
 };
@@ -113,22 +117,39 @@ class ProfilePageBaseClass extends Component {
 
   onPostSubmit = event => {
     event.preventDefault();
-    const postEntry = {
-      postTitle: this.state.titleinput,
-      postContent: this.state.postcontent,
-      username: this.state.username,
-      email: this.state.email,
-      author: this.props.UID.uid,
-      time: F.database.ServerValue.TIMESTAMP,
-      likes: 0,
-      dislikes: 0,
-      liked: [],
-      disliked: [],
-      access: []
-    };
+    const postEntry = this.state.image
+      ? {
+          postTitle: this.state.titleinput,
+          username: this.state.username,
+          email: this.state.email,
+          author: this.props.UID.uid,
+          time: F.database.ServerValue.TIMESTAMP,
+          postType: this.state.postType,
+          likes: 0,
+          dislikes: 0,
+          liked: [],
+          disliked: [],
+          access: []
+        }
+      : {
+          postTitle: this.state.titleinput,
+          postContent: this.state.postcontent,
+          username: this.state.username,
+          email: this.state.email,
+          author: this.props.UID.uid,
+          time: F.database.ServerValue.TIMESTAMP,
+          likes: 0,
+          dislikes: 0,
+          liked: [],
+          disliked: [],
+          access: []
+        };
     const key = this.props.firebase.posts().push().key;
     let userPosts = [];
     this.props.firebase.post(key).set(postEntry);
+    if (this.state.image) {
+      this.props.firebase.postImage(key).put(this.state.image);
+    }
     this.props.firebase.user(this.props.UID.uid).on("value", snapshot => {
       const userInfo = snapshot.val();
       if (userInfo.POST) {
@@ -137,7 +158,12 @@ class ProfilePageBaseClass extends Component {
     });
     userPosts.push(key);
     this.props.firebase.user(this.props.UID.uid).update({ POST: userPosts });
-    this.setState({ titleinput: "", postcontent: "" });
+    this.setState({
+      titleinput: "",
+      postcontent: "",
+      image: null,
+      postType: null
+    });
   };
 
   onLikeBtn = event => {
@@ -360,9 +386,23 @@ class ProfilePageBaseClass extends Component {
     this.setState({ userPosts });
   };
 
+  onAddImage = event => {
+    const image = event.target.files[0];
+    if (image) {
+      this.setState({ postType: "image", image });
+    }
+  };
+
   render() {
-    const { titleinput, postcontent } = this.state;
-    let inValid = titleinput === "" || postcontent === "";
+    const { titleinput, postcontent, image } = this.state;
+    console.log(
+      image
+        ? titleinput === "" || postcontent === ""
+        : !(titleinput === "" || postcontent === "")
+    );
+    let inValid = image
+      ? titleinput === ""
+      : titleinput === "" || postcontent === "";
     return (
       <div className={classes.pageContent}>
         <div className={classes.feeds}>
@@ -382,16 +422,34 @@ class ProfilePageBaseClass extends Component {
               value={this.state.titleinput}
               placeholder="Title"
             />
-            <textarea
-              className={classes.postContentInput}
-              type="text"
-              name="postcontent"
-              onChange={this.onPostChange}
-              value={this.state.postcontent}
-              placeholder="Post here"
-              rows="2"
-            />
+            {!this.state.postType && (
+              <textarea
+                className={classes.postContentInput}
+                type="text"
+                name="postcontent"
+                onChange={this.onPostChange}
+                value={this.state.postcontent}
+                placeholder="Post here"
+                rows="2"
+              />
+            )}
+            {this.state.postType && (
+              <div className="image-added" style={{ marginTop: "5px" }}>
+                Image Added!
+              </div>
+            )}
             <div className={classes.postSubmitBtnBox}>
+              <div className="add-image-container">
+                <label htmlFor="addImage" className={classes.addImageLabel}>
+                  Add Image
+                </label>
+                <input
+                  type="file"
+                  id="addImage"
+                  className={classes.addImageInput}
+                  onChange={this.onAddImage}
+                />
+              </div>
               <button
                 disabled={inValid}
                 className={classes.postSubmitBtn}
@@ -445,6 +503,7 @@ const Feeders = ({ onDislikeBtn, onLikeBtn, posts, UID }) => (
           liked={posts[key].liked}
           disliked={posts[key].disliked}
           UID={UID}
+          postType={posts[key].postType}
           postAuthor={posts[key].username}
         />
       ))}
@@ -468,8 +527,6 @@ const SearchUser = () => (
     </Link>
   </React.Fragment>
 );
-
-//const ProfilePageBase = withRouter(withFirebase(ProfilePageBaseClass));
 
 export default ProfilePage;
 export { HeaderBar, NotLoggedIn };

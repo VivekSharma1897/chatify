@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./postcard.css";
+import { withFirebase } from "../firebase/";
 
 const classes = {
   userPostAuthor: "user-post-author",
@@ -16,8 +17,27 @@ const classes = {
   voteContainer: "vote-container"
 };
 
-class PostCard extends Component {
-  state = {};
+const PostCard = props => (
+  <React.Fragment>{withFirebase(PostCardBaseClass)(props)}</React.Fragment>
+);
+
+class PostCardBaseClass extends Component {
+  state = {
+    imageURL: null
+  };
+
+  componentDidMount() {
+    if (this.props.postType === "image") {
+      setTimeout(() => {
+        this.props.firebase
+          .postImage(this.props.postID)
+          .getDownloadURL()
+          .then(url => {
+            this.setState({ imageURL: url });
+          });
+      }, 10000);
+    }
+  }
 
   render() {
     let total = this.props.likes + this.props.dislikes;
@@ -50,7 +70,10 @@ class PostCard extends Component {
             <p>{this.props.postTitle}</p>
           </div>
           <div className={classes.userPostContent}>
-            <p>{this.props.postContent}</p>
+            {this.props.postType && (
+              <img className="post-image" src={this.state.imageURL} />
+            )}
+            {!this.props.postType && <p>{this.props.postContent}</p>}
           </div>
         </div>
         <div className={classes.lowerBlock}>

@@ -116,6 +116,12 @@ h1 {
   border-top: none;
   border-color: black;
 }
+
+.post-submit-btn-box {
+  display: flex;
+  flex-direction: row;
+}
+
 .post-submit-btn {
   outline: none;
   margin-right: 0px;
@@ -210,4 +216,29 @@ h1 {
 ::-webkit-scrollbar-thumb:hover {
   background: #386e3b;
   border-radius: 10px;
+}
+.add-image-container {
+  flex-grow: 2;
+}
+.add-image-input {
+  display: none;
+}
+.add-image-label {
+  font-size: 13px;
+  outline: none;
+  float: left;
+  padding: 5px;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
+  background: #386e3b;
+  color: white;
+  border: 1px solid #386e3b;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+.image-added {
+  align-items: center;
+  padding: 5px 0;
+  border: 1px solid #386e3b;
+  border-radius: 3px;
 }

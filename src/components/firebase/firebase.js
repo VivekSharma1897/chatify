@@ -35,6 +35,7 @@ class Firebase {
   post = uid => this.db.ref(`posts/${uid}`);
   chat = uid => this.db.ref(`chats/${uid}`);
   getProfileImage = image => this.storage.ref(`profileImages/${image}`);
+  postImage = image => this.storage.ref(`postImages/${image}`);
 }
 
 export default Firebase;

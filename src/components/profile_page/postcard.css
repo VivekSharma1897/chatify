@@ -30,6 +30,12 @@
   padding-left: 5px;
 }
 
+.post-image {
+  border-radius: 4px;
+  max-width: inherit;
+  width: 100%;
+}
+
 .user-post-title {
   font-weight: bold;
   font-size: 18px;
