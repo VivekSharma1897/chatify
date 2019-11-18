@@ -72,9 +72,7 @@ class FriendListSideBar extends Component {
   }
 
   onChat = event => {
-    // if (this.state.currChatBox) {
-    //   this.setState({ currChatBox: false, fromMeChats: [], toMeChats: [] });
-    // }
+    this.onChatClose();
     this.setState({ currChatBox: true, currChatFriend: event.target.name });
     this.fetchChats();
   };
