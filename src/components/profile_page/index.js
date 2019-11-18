@@ -456,6 +456,11 @@ const HeaderBar = () => (
     <h1 className={classes.navTitle}>
       <Link to={ROUTES.PROFILE_PAGE}>Chatify</Link>
     </h1>
+    <ul className={classes.navList}>
+      <li className={classes.navListItem}>Chat</li>
+      <li className={classes.navListItem}>ProfilePic</li>
+      <li className={classes.navListItem}>Notification</li>
+    </ul>
     <SearchUser />
     <SignOut />
   </div>
