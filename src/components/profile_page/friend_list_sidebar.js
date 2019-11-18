@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import F from "firebase";
 import "./friend_list_sidebar.css";
+import ReactDOM from "react-dom";
 
 const classes = {
   sidePanel: "side-panel",
@@ -128,6 +129,7 @@ class FriendListSideBar extends Component {
         );
       });
       this.setState({ singleChatThread: sortedSingleChatThread });
+      this.scrollToBottom();
       console.log(this.state.singleChatThread);
       console.log(this.state.fromMeChats);
       console.log(this.state.toMeChats);
@@ -172,6 +174,11 @@ class FriendListSideBar extends Component {
     }, 100);
   };
 
+  scrollToBottom = () => {
+    const messageContainer = ReactDOM.findDOMNode(this.messageContainer);
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+  };
+
   render() {
     return (
       <div className={classes.sidePanel}>
@@ -200,7 +207,12 @@ class FriendListSideBar extends Component {
                 X
               </button>
             </div>
-            <div className={classes.chatBody}>
+            <div
+              ref={el => {
+                this.messageContainer = el;
+              }}
+              className={classes.chatBody}
+            >
               {this.state.singleChatThread && (
                 <DisplayChats
                   fromMeChats={this.state.fromMeChats}
