@@ -1,0 +1,65 @@
+.prof-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.prof-container {
+  width: 60%;
+  border: 1px solid #386e38;
+  border-radius: 3px;
+  height: 300px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(#386e38 60%, white 40%);
+}
+.prof-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 160px;
+  margin-top: 60px;
+  border: 4px solid #6a926c;
+}
+.prof-name {
+  font-family: "Lato", sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 15px;
+}
+.prof-below-head {
+  font-family: "Lato", sans-serif;
+  width: 60%;
+  margin-top: 20px;
+}
+.prof-infos {
+  width: auto;
+  border: 1px solid #386e38;
+  border-radius: 3px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.prof-labels {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.prof-data {
+  margin-bottom: 10px;
+}
+.imageInput {
+  display: none;
+}
+.profilePicUploadLabel {
+  display: none;
+  padding: 10px;
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  border: 1px solid #386e38;
+  background: white;
+  margin-top: -140px;
+  padding: 50px 20px;
+  border-radius: 100px;
+  opacity: 40%;
+}
