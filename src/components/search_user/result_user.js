@@ -15,6 +15,7 @@ class ResultUser extends Component {
   state = {};
 
   render() {
+    let showButton = this.props.myID === this.props.userID ? false : true;
     console.log(">", this.props.friends);
     let addFriendText = "Add Friend";
     let friendDisable = false;
@@ -32,14 +33,16 @@ class ResultUser extends Component {
           <p className={classes.userEmail}>{this.props.email}</p>
         </div>
         <div className={classes.addFriendContainer}>
-          <button
-            className={classes.addFriendBtn}
-            disabled={friendDisable}
-            onClick={this.props.onAddFriend}
-            name={this.props.userID}
-          >
-            {addFriendText}
-          </button>
+          {showButton && (
+            <button
+              className={classes.addFriendBtn}
+              disabled={friendDisable}
+              onClick={this.props.onAddFriend}
+              name={this.props.userID}
+            >
+              {addFriendText}
+            </button>
+          )}
         </div>
       </div>
     );
